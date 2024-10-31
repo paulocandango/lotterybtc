@@ -1,0 +1,15 @@
+EMBASAMENTO DO PROJETO
+
+Estou criando um projeto de software que será versionado no github. O nome desse projeto será lotterybtc.
+
+O lotterybtc será um software complexo com dois implantáveis principais construidos em Rust e demais tecnologias como Env, Podman, ActixWeb, Cronjob, Thirtyfor, etc.
+
+O primeiro implantável será um webscrawler construído para ser publicado na AWS Fargate, será uma imagem em podman totalmente independente que terá uma tarefa de média complexidade executada sob agendamento.
+
+A cada hora a AWS deverá subir essa imagem e executar sua função principal que é abrir um navegador de internet usando thirtyfor, pesquisar no banco de dados PostgreeSQL quais sites ele deverá visitar, abrir cada página dessa através de um driver que pode ser qualquer um, como o driver do firefox, do chrome ou até do edge, recuperar algumas informações das páginas e salvar essas informações no banco de dados.
+
+O segundo implantável será do do servidor web ActixWeb, que vai expor páginas web com esses resultados capturados, além de permitir ao usuário da internet cadastrar algumas apostas escolhendo os elementos que aparecerão futuramente nos sites cadastrados, esse servidor web deve ficar on-line 24 horas por dia mas sinceramente ele deve receber menos de 1 requisição por dia, na verdade será muito pouco usado no começo, pode ser que ninguém acesse esse site então esse serviço poderia até ficar desligado no começo e só subir se alguém tentar acessar esse site.
+
+PERGUNTA 1
+
+Com base nessa necessidade de negócio e tendo em vista que eu estou usando como base o diretório raiz "C:\dev" no meu computador, qual a estrutura de pastas que você recomenda para que organize os arquivos do meu projeto, como por exemplo, um diretório para colocar os instaláveis que vou precisar como RustRover e Podman, outro diretório para armazenar a documentação do projeto que seria interessante estar versionada no github, onde eu colocaria os arquivos de código do projeto como por exemplo os arquivos .rs, uma pasta para colocar os drivers dentro do projeto de código, construa tudo com base nos padrões internacionais de mercado, o que é mais comumente usado e faça um script para rodar no CMD para criar todos esses diretórios.
