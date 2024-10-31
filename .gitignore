@@ -1,4 +1,11 @@
-install/ 
+# Ignorar diretório de build do Rust
 /target/
-.idea/
-/.idea/
+
+# Ignorar configurações de IDE
+**/.idea/
+
+# Ignorar placeholders
+*.gitkeep
+
+# Ignorar diretório de instaladores (se aplicável)
+install/
