@@ -17,7 +17,8 @@ COPY ./shared ./shared
 RUN cargo build --release --manifest-path ./crawler/Cargo.toml
 
 # Etapa final: reduz a imagem para produção
-FROM debian:bookworm-slim
+FROM alpine:latest
+RUN apk add --no-cache libc6-compat gcc
 
 # Define o diretório de trabalho
 WORKDIR /app
