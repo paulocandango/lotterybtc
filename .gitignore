@@ -1,5 +1,5 @@
 # Ignorar diretório de build do Rust
-/target/
+target/
 
 # Ignorar configurações de IDE
 **/.idea/
@@ -10,5 +10,3 @@
 # Ignorar diretório de instaladores (se aplicável)
 install-developers/
 
-#Ignora arquivos no diretorio de compilação ou seja o que recebe os arquivos compilados
-target/*

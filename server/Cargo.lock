@@ -3,13 +3,6 @@
 version = 3
 
 [[package]]
-name = "crawler"
-version = "0.1.0"
-dependencies = [
- "shared",
-]
-
-[[package]]
 name = "server"
 version = "0.1.0"
 dependencies = [
