@@ -8,4 +8,7 @@
 *.gitkeep
 
 # Ignorar diretório de instaladores (se aplicável)
-install/
+install-developers/
+
+#Ignora arquivos no diretorio de compilação ou seja o que recebe os arquivos compilados
+target/*

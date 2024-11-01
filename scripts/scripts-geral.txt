@@ -1,0 +1,3 @@
+[CMD]
+#Monta uma arvore de arquivos e pastas locais
+tree /f /A
