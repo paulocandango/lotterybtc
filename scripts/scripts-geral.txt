@@ -1,3 +1,10 @@
 [CMD]
 #Monta uma arvore de arquivos e pastas locais
 tree /f /A
+
+[Git]
+#Inicia o programa server
+cargo run -p server
+
+#Inicia o programa cralwer
+cargo run -p crawler

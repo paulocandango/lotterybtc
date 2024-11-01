@@ -1,3 +1,5 @@
 fn main() {
-    println!("Hello, world!");
+    println!("Server rodando!");
+
+    shared::example_function();
 }
