@@ -1,2 +1,14 @@
 cd C:\dev\lotterybtc
+
+podman machine init
+
+podman machine start
+
 podman build -t crawler-prod -f crawler/Dockerfile .
+
+// Roda a imagem e mantem o terminal aberto nela, parado
+podman run -it --rm --entrypoint sh localhost/crawler-prod
+
+    chromium-browser --headless --no-sandbox --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --disable-features=VizDisplayCompositor --dump-dom https://projloto.onrender.com/static/example.html
+    chromium-browser --headless --no-sandbox --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --disable-features=VizDisplayCompositor --dump-dom https://loterias.caixa.gov.br/Paginas/default.aspx
+    chromium-browser --headless --no-sandbox --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --disable-features=VizDisplayCompositor --virtual-time-budget=10000 --dump-dom https://loterias.caixa.gov.br/Paginas/default.aspx

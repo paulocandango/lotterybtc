@@ -18,7 +18,11 @@ RUN cargo build --release --manifest-path ./crawler/Cargo.toml
 
 # Etapa final: reduz a imagem para produção
 FROM alpine:latest
-RUN apk add --no-cache libc6-compat gcc
+RUN apk add --no-cache libc6-compat gcc chromium
+
+#Variaveis de ambiente
+ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV CHROME_PATH=/usr/lib/chromium/
 
 # Define o diretório de trabalho
 WORKDIR /app
