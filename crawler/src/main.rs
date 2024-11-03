@@ -4,7 +4,7 @@ use std::time::Duration;
 use tokio::time::sleep;
 use thirtyfour::prelude::*;
 use std::process::Command;
-use scraper::{Html, Selector};
+use thirtyfour::ChromeCapabilities;
 
 #[tokio::main]
 async fn main() -> WebDriverResult<()> {
@@ -24,35 +24,60 @@ async fn main() -> WebDriverResult<()> {
     sleep(Duration::from_secs(2)).await;
 
     // Configura o WebDriver para o Chrome headless
-    let mut caps = DesiredCapabilities::chrome();
+    let mut caps = ChromeCapabilities::new();
     caps.set_headless()?;
     caps.set_disable_gpu()?;
     caps.add_arg("--no-sandbox")?;
     caps.add_arg("--disable-dev-shm-usage")?;
     caps.add_arg("--window-size=1920,1080")?;
-
-    // Inicia o WebDriver e navega até a página desejada
+    caps.add_arg("--disable-blink-features=AutomationControlled")?;
+    caps.add_arg("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36")?;
     let driver = WebDriver::new("http://localhost:9515", caps).await?;
-    driver.get("https://projloto.onrender.com/static/example.html").await?;
-    println!("Página carregada com sucesso!");
 
-    // Captura o HTML completo da página
-    let page_source = driver.source().await?;
-    println!("Conteúdo completo da página:\n{}", page_source);
 
-    let document = Html::parse_document(&page_source);
-    let concurso_selector = Selector::parse("#identity").unwrap();
-    if let Some(resultado) = document.select(&concurso_selector).next() {
-        // Captura o texto do concurso
-        let concurso_texto = resultado.inner_html(); // ou use resultado.text() para pegar apenas o texto sem HTML
-        println!("{}", concurso_texto);
-    } else {
-        println!("Resultado não encontrado.");
+    let url = "http://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx";
+    sleep(Duration::from_secs(2)).await;
+    let page_source = driver.get(url).await?;
+    println!("Página {} carregada com sucesso!", url);
+    println!("CONTEUDO COMPLETO: {:?}", page_source);
+
+    // Define o tempo máximo de espera
+    let css = "ul#ulDezenas li";
+    let timeout = Duration::from_secs(20);
+    let mut elapsed = Duration::from_secs(0);
+    let interval = Duration::from_millis(3000); // Intervalo entre cada verificação
+
+    // Loop para aguardar até que 6 elementos sejam encontrados ou o tempo máximo seja atingido
+    let mut elements;
+    loop {
+
+        let page_source = driver.source().await?;
+        println!("CONTEUDO COMPLETO:\n {} \n\n\n\n\n\n\n\n\n\n", page_source);
+
+        elements = driver.find_all(By::Css(css)).await?;
+        println!("Qtd Elementos Encontrados: {:?}", elements.len());
+        if elements.len() == 6 {
+            println!("Encontramos exatamente 6 elementos com o seletor 'h2 > span.ng-binding': {:?}", elements);
+            break;
+        }
+
+        // Verifica se o tempo máximo foi alcançado
+        if elapsed >= timeout {
+            println!("Tempo de espera excedido sem encontrar 6 elementos.");
+            break;
+        }
+
+        sleep(interval).await;
+        elapsed += interval;
     }
 
-    // Encerra o driver para liberar recursos
+
+    println!("Procurando o seletor {}\nEncontramos {} elementos.\nSão eles: {:?}", css, elements.len(), elements);
+    let page_source = driver.source().await?;
+    println!("CONTEUDO COMPLETO:\n{}", page_source);
+
     driver.quit().await?;
-    drop(chromedriver); // Encerra o processo do ChromeDriver
+    drop(chromedriver);
 
     println!("FINALIZANDO LotteryBtc-Crawler!");
     Ok(())
