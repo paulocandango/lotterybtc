@@ -2,13 +2,11 @@ use dotenv::dotenv;
 use tokio;
 use std::time::Duration;
 use tokio::time::sleep;
-use thirtyfour;
 use thirtyfour::prelude::*;
-use std::process::{Command, Child};
+use std::process::Command;
 
 #[tokio::main]
 async fn main() -> WebDriverResult<()> {
-
     println!("INICIANDO LotteryBtc-Crawler!");
     dotenv().ok();
 
@@ -16,7 +14,7 @@ async fn main() -> WebDriverResult<()> {
     println!("CHROMEDRIVER_PATH: {}", chromedriver_path);
 
     // Inicia o ChromeDriver
-    let mut chromedriver = Command::new(chromedriver_path)
+    let chromedriver = Command::new(chromedriver_path)
         .arg("--port=9515")
         .spawn()
         .expect("Falha ao iniciar o ChromeDriver");
@@ -26,21 +24,24 @@ async fn main() -> WebDriverResult<()> {
 
     // Configura o WebDriver para o Chrome headless
     let mut caps = DesiredCapabilities::chrome();
+    caps.set_headless()?;
     caps.set_disable_gpu()?;
-    caps.add_arg("--headless")?;
     caps.add_arg("--no-sandbox")?;
     caps.add_arg("--disable-dev-shm-usage")?;
+    caps.add_arg("--window-size=1920,1080")?;
 
-    // Inicia o ChromeDriver
+    // Inicia o WebDriver e navega até a página desejada
     let driver = WebDriver::new("http://localhost:9515", caps).await?;
-
     driver.get("https://projloto.onrender.com/static/example.html").await?;
     println!("Página carregada com sucesso!");
 
-    let page_source = driver.page_source().await?;
+    // Captura o HTML completo da página
+    let page_source = driver.source().await?;
     println!("Conteúdo completo da página:\n{}", page_source);
 
+    // Encerra o driver para liberar recursos
     driver.quit().await?;
+    drop(chromedriver); // Encerra o processo do ChromeDriver
 
     println!("FINALIZANDO LotteryBtc-Crawler!");
     Ok(())
