@@ -1,8 +1,29 @@
-cd C:\dev\lotterybtc
+	
+	--- GERAL -------------------
 
 podman machine init
 
 podman machine start
+
+	--- CRAWLER -----------------
+
+cd "C:\dev\lotterybtc\crawler"
+
+podman build -t lotterybtc-crawler .
+
+podman run lotterybtc-crawler
+
+podman run -it --rm --entrypoint sh localhost/lotterybtc-crawler
+
+	--- SERVER -------------------
+
+podman build -t lotterybtc-server .
+
+podman run lotterybtc-server
+
+---------------------------
+
+
 
 podman build -t crawler-prod -f crawler/Dockerfile .
 

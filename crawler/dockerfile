@@ -5,16 +5,13 @@ FROM rust:latest AS builder
 WORKDIR /app
 
 # Copia os arquivos de configuração e dependências do `crawler`
-COPY ./crawler/Cargo.toml ./crawler/Cargo.lock ./
+COPY ./Cargo.toml ./Cargo.lock ./
 
 # Copia o código-fonte do `crawler`
-COPY ./crawler ./crawler
-
-# Copia a pasta `shared`
-COPY ./shared ./shared
+COPY . .
 
 # Constrói o projeto `crawler`
-RUN cargo build --release --manifest-path ./crawler/Cargo.toml
+RUN cargo build --release --manifest-path ./Cargo.toml
 
 # Etapa final: reduz a imagem para produção
 FROM alpine:latest
@@ -28,7 +25,7 @@ ENV CHROME_PATH=/usr/lib/chromium/
 WORKDIR /app
 
 # Copia o binário compilado do `crawler`
-COPY --from=builder /app/crawler/target/release/crawler /app/crawler
+COPY --from=builder /app/target/release/lotterybtc-crawler /app/lotterybtc-crawler
 
 # Define o ponto de entrada para o contêiner
-ENTRYPOINT ["/app/crawler"]
+ENTRYPOINT ["/app/lotterybtc-crawler"]
