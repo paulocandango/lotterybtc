@@ -4,6 +4,7 @@ use std::time::Duration;
 use tokio::time::sleep;
 use thirtyfour::prelude::*;
 use std::process::Command;
+use scraper::{Html, Selector};
 
 #[tokio::main]
 async fn main() -> WebDriverResult<()> {
@@ -38,6 +39,16 @@ async fn main() -> WebDriverResult<()> {
     // Captura o HTML completo da página
     let page_source = driver.source().await?;
     println!("Conteúdo completo da página:\n{}", page_source);
+
+    let document = Html::parse_document(&page_source);
+    let concurso_selector = Selector::parse("#identity").unwrap();
+    if let Some(resultado) = document.select(&concurso_selector).next() {
+        // Captura o texto do concurso
+        let concurso_texto = resultado.inner_html(); // ou use resultado.text() para pegar apenas o texto sem HTML
+        println!("{}", concurso_texto);
+    } else {
+        println!("Resultado não encontrado.");
+    }
 
     // Encerra o driver para liberar recursos
     driver.quit().await?;
