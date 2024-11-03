@@ -8,6 +8,7 @@ use thirtyfour::ChromeCapabilities;
 
 #[tokio::main]
 async fn main() -> WebDriverResult<()> {
+
     println!("INICIANDO LotteryBtc-Crawler!");
     dotenv().ok();
 
@@ -29,14 +30,15 @@ async fn main() -> WebDriverResult<()> {
     caps.set_disable_gpu()?;
     caps.add_arg("--no-sandbox")?;
     caps.add_arg("--disable-dev-shm-usage")?;
+    caps.add_arg("--remote-debugging-port=9222")?;
     caps.add_arg("--window-size=1920,1080")?;
     caps.add_arg("--disable-blink-features=AutomationControlled")?;
     caps.add_arg("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36")?;
     let driver = WebDriver::new("http://localhost:9515", caps).await?;
-
-
-    let url = "http://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx";
     sleep(Duration::from_secs(2)).await;
+
+
+    let url = "http://192.168.1.10/static/example.html";
     let page_source = driver.get(url).await?;
     println!("Página {} carregada com sucesso!", url);
     println!("CONTEUDO COMPLETO: {:?}", page_source);

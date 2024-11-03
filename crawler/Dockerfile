@@ -15,11 +15,18 @@ COPY . .
 RUN cargo build --release --manifest-path ./Cargo.toml
 
 # Etapa final: reduz a imagem para produção
-FROM alpine:latest
-RUN apk add --no-cache libc6-compat gcc chromium
+FROM debian:stable-slim
 
-#Variaveis de ambiente
-ENV CHROME_BIN=/usr/bin/chromium-browser
+# Define o frontend como não interativo
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Instala as dependências essenciais, incluindo Chromium e ChromeDriver
+RUN apt-get update && \
+    apt-get install -y libc6 wget unzip chromium chromium-driver && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Variáveis de ambiente para Chromium
+ENV CHROME_BIN=/usr/bin/chromium
 ENV CHROME_PATH=/usr/lib/chromium/
 
 # Define o diretório de trabalho
