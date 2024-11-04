@@ -10,8 +10,8 @@ use thirtyfour::ChromeCapabilities;
 async fn main() -> WebDriverResult<()> {
 
     println!("INICIANDO LotteryBtc-Crawler!");
-    dotenv().ok();
 
+    dotenv().ok();
     let chromedriver_path = dotenv::var("CHROMEDRIVER_PATH").unwrap_or_else(|_| "chromedriver".to_string());
     println!("CHROMEDRIVER_PATH: {}", chromedriver_path);
 
@@ -38,7 +38,7 @@ async fn main() -> WebDriverResult<()> {
     sleep(Duration::from_secs(2)).await;
 
 
-    let url = "http://192.168.1.10/static/example.html";
+    let url = "http://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx";
     let page_source = driver.get(url).await?;
     println!("Página {} carregada com sucesso!", url);
     println!("CONTEUDO COMPLETO: {:?}", page_source);
