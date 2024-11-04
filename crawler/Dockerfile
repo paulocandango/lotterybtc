@@ -6,10 +6,10 @@ WORKDIR /app
 
 # Copia os arquivos de configuração e dependências do `crawler`
 COPY ./Cargo.toml ./Cargo.lock ./
-COPY .env.prod .env
-
-# Copia o código-fonte do `crawler`
 COPY . .
+
+# Copia o arquivo de ambiente
+COPY .env.prod .env
 
 # Constrói o projeto `crawler`
 RUN cargo build --release --manifest-path ./Cargo.toml
