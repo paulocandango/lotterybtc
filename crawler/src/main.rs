@@ -3,26 +3,19 @@ use tokio;
 use std::time::Duration;
 use tokio::time::sleep;
 use thirtyfour::prelude::*;
-use std::process::Command;
+use std::process::{Command};
 use thirtyfour::ChromeCapabilities;
 
 #[tokio::main]
 async fn main() -> WebDriverResult<()> {
 
     println!("INICIANDO LotteryBtc-Crawler!");
-
     dotenv().ok();
-    let chromedriver_path = dotenv::var("CHROMEDRIVER_PATH").unwrap_or_else(|_| "chromedriver".to_string());
-    println!("CHROMEDRIVER_PATH: {}", chromedriver_path);
 
-    // Inicia o ChromeDriver
-    let chromedriver = Command::new(chromedriver_path)
-        .arg("--port=9515")
-        .spawn()
-        .expect("Falha ao iniciar o ChromeDriver");
-
-    // Aguarda um tempo para garantir que o ChromeDriver esteja pronto
-    sleep(Duration::from_secs(2)).await;
+    // Inicializa o ChromeDriver
+    println!("ChromeDriver Iniciando...");
+    iniciar_chromedriver().await;
+    println!("ChromeDriver iniciado com sucesso.");
 
     // Configura o WebDriver para o Chrome headless
     let mut caps = ChromeCapabilities::new();
@@ -79,8 +72,37 @@ async fn main() -> WebDriverResult<()> {
     println!("CONTEUDO COMPLETO:\n{}", page_source);
 
     driver.quit().await?;
-    drop(chromedriver);
 
     println!("FINALIZANDO LotteryBtc-Crawler!");
     Ok(())
+}
+
+// Função para iniciar o ChromeDriver e aguardar até que ele esteja pronto
+async fn iniciar_chromedriver() {
+
+    let chromedriver_path = dotenv::var("CHROMEDRIVER_PATH").unwrap_or_else(|_| "chromedriver".to_string());
+    Command::new(chromedriver_path)
+        .arg("--port=9515")
+        .spawn()
+        .expect("Falha ao iniciar o ChromeDriver");
+
+    // Aguarda o ChromeDriver estar pronto, tentando conexão repetidamente
+    esperar_chromedriver_pronto().await;
+}
+
+// Função para verificar se o ChromeDriver está pronto para aceitar conexões
+async fn esperar_chromedriver_pronto() {
+    let max_attempts = 10;
+    let mut attempts = 0;
+
+    while attempts < max_attempts {
+        if reqwest::get("http://localhost:9515").await.is_ok() {
+            println!("ChromeDriver pronto para conexões.");
+            return;
+        }
+        attempts += 1;
+        sleep(Duration::from_millis(500)).await;
+    }
+
+    eprintln!("Erro: ChromeDriver não está pronto após múltiplas tentativas.");
 }
