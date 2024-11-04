@@ -34,6 +34,7 @@ WORKDIR /app
 
 # Copia o binário compilado do `crawler`
 COPY --from=builder /app/target/release/lotterybtc-crawler /app/lotterybtc-crawler
+COPY --from=builder /app/.env /app/.env
 
 # Define o ponto de entrada para o contêiner
 ENTRYPOINT ["/app/lotterybtc-crawler"]
