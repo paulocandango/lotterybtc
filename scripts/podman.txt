@@ -15,7 +15,7 @@ podman run lotterybtc-crawler
 
 podman run -it --rm --entrypoint sh localhost/lotterybtc-crawler
 
-https://loterias.caixa.gov.br/Paginas/default.aspx
+http://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx
 
 	--- SERVER -------------------
 
